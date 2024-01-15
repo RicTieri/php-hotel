@@ -50,19 +50,22 @@
 </head>
 
 <body>
-  <ul>
-    <?php foreach ($hotels as $hotel) { ?>
-    <li>
-      <?php echo $hotel['name'] . ' ' . $hotel['description'] . ' ' . $hotel['parking'] . ' ' . $hotel['vote'] . ' ' .  $hotel['distance_to_center']?>
-    </li>
-    <?php } ?>
-  </ul>
+
+  <h1 class="text-center"> Hotel List</h1>
 
   <form action="./index.php" method="GET">
     <select name="is_park" id="is_park">
       <option value="all" selected>all</option>
-      <option value="0">avaible</option>
-      <option value="1">not avaible</option>
+      <option value="1">avaible</option>
+      <option value="0">not avaible</option>
+    </select>
+    <select name="rank" id="rank">
+      <option value="all" selected>all</option>
+      <option value="1">1</option>
+      <option value="2">2</option>
+      <option value="3">3</option>
+      <option value="4">4</option>
+      <option value="5">5</option>
     </select>
     <button type="submit">Filter</button>
   </form>
@@ -79,17 +82,25 @@
       </tr>
     </thead>
     <tbody>
-      <?php if($_GET['is_park'] == 'all') { ?>
-      <?php foreach ($hotels as $hotel) { ?>
+      <?php
+      $i = 1;
+      $filteredHotels = array_filter($hotels, function ($hotel) {
+        if ($_GET['is_park'] == 'all') {
+          return true;
+        } else {
+          return $hotel['parking'] == $_GET['is_park'];
+        }
+      });
+
+       foreach ($filteredHotels as $hotel) { ?>
       <tr>
-        <th scope="row">1</th>
+        <th scope="row"><?php echo $i++ ?></th>
         <td> <?php echo $hotel['name'] ?></td>
         <td> <?php echo $hotel['description'] ?></td>
         <td> <?php if( $hotel['parking']) { echo 'avaible';} else{ echo 'not avaible';}?></td>
         <td> <?php echo $hotel['vote'] ?></td>
         <td> <?php echo $hotel['distance_to_center'] ?></td>
       </tr>
-      <?php } ?>
       <?php } ?>
 
     </tbody>
