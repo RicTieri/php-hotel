@@ -54,18 +54,20 @@
   <h1 class="text-center"> Hotel List</h1>
 
   <form action="./index.php" method="GET">
+    <label for="is_park">Parking:</label>
     <select name="is_park" id="is_park">
-      <option value="all" selected>all</option>
-      <option value="1">avaible</option>
-      <option value="0">not avaible</option>
+      <option value="all" <?php echo (isset($_GET['is_park']) && $_GET['is_park'] == 'all') ? 'selected' : ''; ?>>all</option>
+      <option value="1" <?php echo (isset($_GET['is_park']) && $_GET['is_park'] == '1') ? 'selected' : ''; ?>>available</option>
+      <option value="0" <?php echo (isset($_GET['is_park']) && $_GET['is_park'] == '0') ? 'selected' : ''; ?>>not available</option>
     </select>
+    <label for="rank">Rank:</label>
     <select name="rank" id="rank">
-      <option value="all" selected>all</option>
-      <option value="1">1</option>
-      <option value="2">2</option>
-      <option value="3">3</option>
-      <option value="4">4</option>
-      <option value="5">5</option>
+      <option value="all" <?php echo (isset($_GET['rank']) && $_GET['rank'] == 'all') ? 'selected' : ''; ?>>all</option>
+      <option value="1" <?php echo (isset($_GET['rank']) && $_GET['rank'] == '1') ? 'selected' : ''; ?>>1</option>
+      <option value="2" <?php echo (isset($_GET['rank']) && $_GET['rank'] == '2') ? 'selected' : ''; ?>>2</option>
+      <option value="3" <?php echo (isset($_GET['rank']) && $_GET['rank'] == '3') ? 'selected' : ''; ?>>3</option>
+      <option value="4" <?php echo (isset($_GET['rank']) && $_GET['rank'] == '4') ? 'selected' : ''; ?>>4</option>
+      <option value="5" <?php echo (isset($_GET['rank']) && $_GET['rank'] == '5') ? 'selected' : ''; ?>>5</option>
     </select>
     <button type="submit">Filter</button>
   </form>
@@ -84,15 +86,14 @@
     <tbody>
       <?php
       $i = 1;
-      $filteredHotels = array_filter($hotels, function ($hotel) {
-        if ($_GET['is_park'] == 'all') {
-          return true;
-        } else {
-          return $hotel['parking'] == $_GET['is_park'];
-        }
+      $filtered_hotels = array_filter($hotels, function ($hotel) {
+        $park_filter = (!isset($_GET['is_park']) || $_GET['is_park'] == 'all' || $hotel['parking'] == $_GET['is_park']);
+        $rank_filter = (!isset($_GET['rank']) || $_GET['rank'] == 'all' || $hotel['vote'] >= $_GET['rank']);
+
+        return $park_filter && $rank_filter;
       });
 
-       foreach ($filteredHotels as $hotel) { ?>
+       foreach ($filtered_hotels as $hotel) { ?>
       <tr>
         <th scope="row"><?php echo $i++ ?></th>
         <td> <?php echo $hotel['name'] ?></td>
